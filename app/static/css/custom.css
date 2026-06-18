@@ -1,0 +1,74 @@
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+}
+
+.reveal-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.reveal-up.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Article content styling */
+.prose img {
+  max-width: 100%;
+  height: auto;
+  margin: 1.5rem auto;
+  display: block;
+  border-radius: 0.5rem;
+}
+
+.prose p {
+  margin-bottom: 1rem;
+  line-height: 1.8;
+}
+
+/* Hide scrollbar for horizontal scroll */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* School brand accent bar on category headers */
+.category-header {
+  position: relative;
+  padding-left: 1rem;
+}
+.category-header::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.25rem;
+  bottom: 0.25rem;
+  width: 3px;
+  background: linear-gradient(to bottom, #0e5e6e, #2c7a50);
+  border-radius: 2px;
+}
+
+/* Card hover lift effect */
+.card-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(14, 94, 110, 0.08);
+}
+
+/* Nav active indicator */
+nav a.active {
+  color: #0e5e6e;
+  font-weight: 500;
+}
+
+/* Pagination active page */
+.pagination-active {
+  background: #0e5e6e;
+  color: white;
+}
+
+/* Subtle background pattern for section separators */
+.section-divider {
+  background: linear-gradient(135deg, #e8f4f6 0%, #edf7f1 100%);
+}

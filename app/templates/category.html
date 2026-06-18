@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}{{ category.name }}{% endblock %}
+
+{% block content %}
+<!-- Background decoration -->
+<div class="fixed inset-0 z-0 pointer-events-none opacity-[0.12]"
+     style="background-image: url('{{ url_for('static', filename='img/ef39c1a0ffbaa8b39cf5c4033a21c4b4.jpg') }}'); background-size: cover; background-position: center; background-attachment: fixed;">
+</div>
+
+<section class="relative z-10 py-12 px-5 md:px-16 max-w-container mx-auto">
+  <!-- Header -->
+  <div class="mb-12 pb-8">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-1.5 h-10 bg-gradient-to-b from-primary to-secondary rounded-full"></div>
+      <h1 class="font-serif-cn text-3xl md:text-4xl text-on-surface">{{ category.name }}</h1>
+    </div>
+    <p class="font-sans-cn text-on-surface-variant ml-5">共 {{ articles.total }} 篇文章</p>
+  </div>
+
+  <!-- Article List -->
+  <div class="space-y-8">
+    {% for art in articles.items %}
+    <article class="group flex flex-col md:flex-row gap-6 pb-8 border-b border-outline-variant/10 card-lift">
+      {% if art.cover_image %}
+      <a href="{{ url_for('views.article', article_id=art.id) }}" class="md:w-64 flex-shrink-0">
+        <div class="w-full h-44 overflow-hidden rounded-lg bg-gray-100">
+          <img src="{{ art.cover_image }}" alt="{{ art.title }}"
+               class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"/>
+        </div>
+      </a>
+      {% endif %}
+      <div class="flex-1">
+        <div class="flex items-center space-x-3 mb-3 font-mono text-xs text-on-surface-variant">
+          <span>{{ art.published_at.strftime('%Y-%m-%d') if art.published_at else '' }}</span>
+          {% if art.author %}
+          <span class="w-1 h-1 bg-primary/40 rounded-full"></span>
+          <span>{{ art.author }}</span>
+          {% endif %}
+        </div>
+        <a href="{{ url_for('views.article', article_id=art.id) }}">
+          <h2 class="font-serif-cn text-xl text-on-surface group-hover:text-primary transition-colors mb-3 line-clamp-2">{{ art.title }}</h2>
+        </a>
+        <p class="font-sans-cn text-sm text-on-surface-variant line-clamp-3">{{ art.summary }}</p>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  {% if articles.pages > 1 %}
+  <nav class="flex justify-center items-center space-x-2 mt-16">
+    {% if articles.has_prev %}
+    <a href="?page={{ articles.prev_num }}"
+       class="px-4 py-2 border border-primary text-primary text-sm rounded-full hover:bg-primary hover:text-white transition-all">上一页</a>
+    {% endif %}
+
+    {% for p in articles.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+      {% if p %}
+        {% if p == articles.page %}
+        <span class="px-4 py-2 bg-primary text-white text-sm rounded-full">{{ p }}</span>
+        {% else %}
+        <a href="?page={{ p }}" class="px-4 py-2 border border-outline-variant/50 text-sm rounded-full hover:border-primary hover:text-primary transition-all">{{ p }}</a>
+        {% endif %}
+      {% else %}
+        <span class="px-2 text-on-surface-variant">...</span>
+      {% endif %}
+    {% endfor %}
+
+    {% if articles.has_next %}
+    <a href="?page={{ articles.next_num }}"
+       class="px-4 py-2 border border-primary text-primary text-sm rounded-full hover:bg-primary hover:text-white transition-all">下一页</a>
+    {% endif %}
+  </nav>
+  {% endif %}
+</section>
+{% endblock %}

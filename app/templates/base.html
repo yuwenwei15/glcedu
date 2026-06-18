@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>{% block title %}桂林学院新闻中心{% endblock %} | 见证卓越</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#0e5e6e",
+            "primary-dark": "#0a4a57",
+            "primary-light": "#e8f4f6",
+            "on-primary": "#ffffff",
+            "surface": "#f9fafb",
+            "on-surface": "#1b1b1b",
+            "on-surface-variant": "#4c5564",
+            "outline-variant": "#d1d9e0",
+            "secondary": "#2c7a50",
+            "secondary-light": "#edf7f1",
+            "accent": "#c8a45c",
+            "background": "#f9fafb",
+          },
+          fontFamily: {
+            "serif-cn": ["'Noto Serif SC'", "'STZhongsong'", "serif"],
+            "sans-cn": ["'Noto Sans SC'", "'PingFang SC'", "sans-serif"],
+            "mono": ["'JetBrains Mono'", "monospace"],
+          },
+          maxWidth: {
+            "container": "1440px",
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-on-surface antialiased overflow-x-hidden selection:bg-primary selection:text-white">
+
+<!-- Navigation -->
+<nav class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-xl border-b border-primary/10 transition-all duration-300" id="global-nav">
+  <div class="flex justify-between items-center w-full px-5 md:px-16 py-3 max-w-container mx-auto">
+    <a class="flex items-center gap-3 hover:opacity-80 transition-opacity" href="{{ url_for('views.index') }}">
+      <img src="{{ url_for('static', filename='img/logo_glc.png') }}" alt="桂林学院" class="h-10 w-auto"/>
+      <span class="hidden sm:block font-serif-cn text-lg font-medium text-primary">新闻中心</span>
+    </a>
+    <div class="hidden md:flex space-x-6 items-center">
+      {% for cat in categories %}
+      <a class="text-on-surface-variant font-sans-cn text-sm tracking-wide hover:text-primary transition-colors duration-300 relative group"
+         href="{{ url_for('views.category', code=cat.code) }}">
+        {{ cat.name }}
+        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+      </a>
+      {% endfor %}
+    </div>
+    <div class="flex items-center space-x-4">
+      <form action="{{ url_for('views.search') }}" method="get" class="hidden md:flex items-center">
+        <input type="text" name="q" placeholder="搜索新闻..." value="{{ request.args.get('q', '') }}"
+               class="bg-primary-light/50 border border-primary/20 rounded-full text-sm px-4 py-1.5 focus:outline-none focus:border-primary focus:bg-white w-36 focus:w-48 transition-all placeholder:text-on-surface-variant/60"/>
+      </form>
+      <button class="md:hidden flex items-center text-primary" onclick="document.getElementById('mobile-nav').classList.toggle('hidden')">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+    </div>
+  </div>
+  <!-- Mobile Nav -->
+  <div id="mobile-nav" class="hidden md:hidden px-5 pb-4 space-y-3 border-t border-primary/10 pt-3">
+    {% for cat in categories %}
+    <a class="block text-on-surface-variant font-sans-cn text-sm hover:text-primary transition-colors"
+       href="{{ url_for('views.category', code=cat.code) }}">{{ cat.name }}</a>
+    {% endfor %}
+    <form action="{{ url_for('views.search') }}" method="get" class="pt-2">
+      <input type="text" name="q" placeholder="搜索..." class="w-full border border-primary/20 rounded-full px-4 py-2 text-sm bg-primary-light/30"/>
+    </form>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<main class="pt-20">
+  {% block content %}{% endblock %}
+</main>
+
+<!-- Footer -->
+<footer class="w-full bg-gradient-to-b from-primary-dark to-[#072f38] text-white/80">
+  <div class="flex flex-col md:flex-row justify-between items-start w-full px-5 md:px-16 py-20 max-w-container mx-auto">
+    <div class="mb-12 md:mb-0">
+      <div class="flex items-center gap-4 mb-6">
+        <img src="{{ url_for('static', filename='img/logo_glc.png') }}" alt="桂林学院" class="h-14 w-auto drop-shadow-lg"/>
+        <div>
+          <h2 class="font-serif-cn text-2xl text-white">桂林学院</h2>
+          <p class="text-white/50 text-xs tracking-widest mt-1">GUILIN UNIVERSITY</p>
+        </div>
+      </div>
+      <p class="font-sans-cn text-sm text-white/50 max-w-sm mb-4 leading-relaxed">
+        地址：中国广西桂林市雁山区雁中路3号<br>
+        邮编：541006 | 电话：0773-3696366
+      </p>
+      <p class="text-white/30 text-xs">&copy; 2024 桂林学院新闻中心. 保留所有权利.</p>
+    </div>
+    <div class="flex flex-col space-y-3 items-start md:items-end">
+      <p class="text-accent text-xs tracking-widest mb-2 uppercase">快速链接</p>
+      {% for cat in categories %}
+      <a class="text-white/50 text-sm hover:text-white transition-all hover:translate-x-1 duration-200"
+         href="{{ url_for('views.category', code=cat.code) }}">{{ cat.name }}</a>
+      {% endfor %}
+      <a class="text-white/50 text-sm hover:text-white transition-all hover:translate-x-1 duration-200 mt-4 flex items-center gap-1"
+         href="https://www.glc.edu.cn" target="_blank">
+        <span class="material-symbols-outlined text-sm">open_in_new</span> 学校官网
+      </a>
+    </div>
+  </div>
+  <!-- Bottom bar -->
+  <div class="border-t border-white/10 py-4 px-5 md:px-16 max-w-container mx-auto">
+    <p class="text-white/30 text-xs text-center">至善至博 · 明德笃行</p>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

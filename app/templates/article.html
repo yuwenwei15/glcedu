@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block content %}
+<article class="py-12 px-5 md:px-16 max-w-container mx-auto">
+  <div class="max-w-3xl mx-auto">
+    <!-- Breadcrumb -->
+    <div class="flex items-center space-x-2 mb-8 font-sans-cn text-sm text-on-surface-variant">
+      <a href="{{ url_for('views.index') }}" class="hover:text-primary transition-colors">首页</a>
+      <span class="material-symbols-outlined text-xs">chevron_right</span>
+      <a href="{{ url_for('views.category', code=article.category.code) }}" class="hover:text-primary transition-colors">{{ article.category.name }}</a>
+      <span class="material-symbols-outlined text-xs">chevron_right</span>
+      <span class="text-primary">正文</span>
+    </div>
+
+    <!-- Title -->
+    <h1 class="font-serif-cn text-2xl md:text-3xl text-on-surface leading-snug mb-6">{{ article.title }}</h1>
+
+    <!-- Meta -->
+    <div class="flex flex-wrap items-center gap-4 mb-10 pb-8 border-b border-outline-variant/30 font-sans-cn text-sm text-on-surface-variant">
+      {% if article.published_at %}
+      <span class="flex items-center gap-1"><span class="material-symbols-outlined text-base text-primary">calendar_today</span>{{ article.published_at.strftime('%Y年%m月%d日') }}</span>
+      {% endif %}
+      {% if article.source %}
+      <span class="flex items-center gap-1"><span class="material-symbols-outlined text-base text-primary">apartment</span>{{ article.source }}</span>
+      {% endif %}
+      {% if article.author %}
+      <span class="flex items-center gap-1"><span class="material-symbols-outlined text-base text-primary">person</span>{{ article.author }}</span>
+      {% endif %}
+      <span class="flex items-center gap-1"><span class="material-symbols-outlined text-base text-primary">visibility</span>{{ article.local_view_count }}</span>
+    </div>
+
+    <!-- Content -->
+    <div class="prose prose-lg max-w-none font-sans-cn
+                prose-headings:font-serif-cn prose-headings:text-primary
+                prose-p:text-on-surface prose-p:leading-relaxed
+                prose-img:rounded prose-img:mx-auto
+                prose-a:text-secondary prose-a:no-underline hover:prose-a:underline">
+      {{ article.content | safe }}
+    </div>
+
+    <!-- Source Link -->
+    <div class="mt-12 pt-8 border-t border-outline-variant/30 flex items-center justify-between">
+      <a href="{{ article.original_url }}" target="_blank"
+         class="inline-flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors">
+        <span class="material-symbols-outlined text-base">open_in_new</span>
+        查看原文
+      </a>
+      <a href="{{ url_for('views.category', code=article.category.code) }}"
+         class="inline-flex items-center gap-1 px-4 py-2 bg-primary-light text-primary text-sm rounded-full hover:bg-primary hover:text-white transition-all">
+        <span class="material-symbols-outlined text-base">arrow_back</span>
+        返回{{ article.category.name }}
+      </a>
+    </div>
+  </div>
+
+  <!-- Related Articles -->
+  {% if related %}
+  <div class="max-w-3xl mx-auto mt-16 pt-12 border-t border-outline-variant/20">
+    <h3 class="font-serif-cn text-xl text-primary mb-8">相关文章</h3>
+    <div class="space-y-4">
+      {% for r in related %}
+      <a href="{{ url_for('views.article', article_id=r.id) }}"
+         class="flex justify-between items-center py-3 border-b border-outline-variant/10 group">
+        <span class="font-sans-cn text-sm text-on-surface group-hover:text-primary transition-colors line-clamp-1 flex-1 mr-4">{{ r.title }}</span>
+        <span class="font-mono text-xs text-on-surface-variant flex-shrink-0">{{ r.published_at.strftime('%m-%d') if r.published_at else '' }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+</article>
+{% endblock %}

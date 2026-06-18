@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}首页{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<header class="relative w-full h-[80vh] flex flex-col justify-end px-5 md:px-16 pb-24 pt-32 overflow-hidden">
+  <div class="absolute inset-0 z-[-1] bg-cover bg-center"
+       style="background-image: url('{{ url_for('static', filename='img/fdecdd0a19e8b0275e1f5434d7001d12.jpg') }}');">
+  </div>
+  <div class="absolute inset-0 z-[-1] bg-gradient-to-t from-primary-dark/90 via-primary-dark/30 to-primary-dark/10"></div>
+  <div class="max-w-container mx-auto w-full">
+    <div class="flex items-center gap-4 mb-6">
+      <img src="{{ url_for('static', filename='img/logo_glc.png') }}" alt="" class="h-16 w-auto drop-shadow-lg hidden md:block"/>
+      <div>
+        <h1 class="font-serif-cn text-3xl md:text-5xl text-white max-w-4xl leading-tight">桂林学院新闻中心</h1>
+        <p class="font-sans-cn text-sm md:text-base text-white/70 mt-2 tracking-widest">GUILIN UNIVERSITY NEWS CENTER</p>
+      </div>
+    </div>
+    <p class="font-sans-cn text-base md:text-lg text-white/80 max-w-2xl border-l-2 border-accent pl-6 py-2">
+      见证卓越的学术追求，记录丰富的校园生活，探索前沿的创新研究。
+    </p>
+  </div>
+  <!-- Scroll Indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center animate-bounce opacity-60">
+    <span class="material-symbols-outlined text-white text-2xl">expand_more</span>
+  </div>
+</header>
+
+<!-- Latest News Section -->
+<section class="py-20 px-5 md:px-16 max-w-container mx-auto">
+  <div class="flex items-center gap-3 mb-12">
+    <div class="w-1 h-8 bg-primary rounded-full"></div>
+    <h2 class="font-serif-cn text-2xl text-primary">最新报道</h2>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+    <!-- Featured Article -->
+    {% if featured %}
+    <div class="md:col-span-8">
+      {% set main = featured[0] %}
+      <a href="{{ url_for('views.article', article_id=main.id) }}" class="block group">
+        {% if main.cover_image %}
+        <div class="relative w-full h-[400px] mb-6 overflow-hidden rounded-lg bg-gray-100">
+          <img src="{{ main.cover_image }}" alt="{{ main.title }}"
+               class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"/>
+          <div class="absolute top-4 left-4 px-3 py-1 bg-primary text-white text-xs font-sans-cn rounded-full">{{ main.category.name }}</div>
+        </div>
+        {% endif %}
+        <div class="flex items-center space-x-4 mb-3 font-mono text-sm text-on-surface-variant">
+          <span>{{ main.published_at.strftime('%Y年%m月%d日') if main.published_at else '' }}</span>
+        </div>
+        <h2 class="font-serif-cn text-2xl md:text-3xl text-on-surface mb-4 group-hover:text-primary transition-colors">{{ main.title }}</h2>
+        <p class="font-sans-cn text-base text-on-surface-variant max-w-2xl line-clamp-3">{{ main.summary }}</p>
+      </a>
+    </div>
+
+    <!-- Side Articles -->
+    <div class="md:col-span-4 space-y-6">
+      {% for art in featured[1:5] %}
+      <article class="group pb-5 border-b border-outline-variant/30">
+        <a href="{{ url_for('views.article', article_id=art.id) }}">
+          <div class="flex items-center space-x-3 mb-2 font-mono text-xs text-on-surface-variant">
+            <span>{{ art.published_at.strftime('%Y-%m-%d') if art.published_at else '' }}</span>
+            <span class="px-2 py-0.5 bg-primary-light text-primary rounded-full text-xs">{{ art.category.name }}</span>
+          </div>
+          <h3 class="font-serif-cn text-lg text-on-surface group-hover:text-primary transition-colors mb-2 line-clamp-2">{{ art.title }}</h3>
+          <p class="font-sans-cn text-sm text-on-surface-variant line-clamp-2">{{ art.summary }}</p>
+        </a>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="md:col-span-12 text-center py-24">
+      <img src="{{ url_for('static', filename='img/logo_glc.png') }}" alt="" class="h-20 mx-auto opacity-20 mb-6"/>
+      <p class="text-on-surface-variant text-lg mb-6">暂无新闻数据</p>
+      <button onclick="triggerScrape()" class="bg-primary text-white px-8 py-3 text-sm font-medium rounded-full hover:bg-primary-dark transition-all shadow-lg shadow-primary/20">
+        立即抓取新闻
+      </button>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Categories Quick Links -->
+<section class="py-16 px-5 md:px-16 max-w-container mx-auto">
+  <div class="flex items-center gap-3 mb-8">
+    <div class="w-1 h-6 bg-accent rounded-full"></div>
+    <h2 class="font-serif-cn text-xl text-on-surface">新闻栏目</h2>
+  </div>
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+    {% for cat in categories %}
+    <a href="{{ url_for('views.category', code=cat.code) }}"
+       class="block p-6 bg-white border border-outline-variant/30 rounded-lg hover:border-primary hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 group text-center">
+      <div class="w-10 h-10 mx-auto mb-3 rounded-full bg-primary-light flex items-center justify-center group-hover:bg-primary transition-colors">
+        <span class="material-symbols-outlined text-primary group-hover:text-white transition-colors text-lg">newspaper</span>
+      </div>
+      <h3 class="font-sans-cn text-sm font-medium text-on-surface group-hover:text-primary transition-colors">{{ cat.name }}</h3>
+      <p class="font-mono text-xs text-on-surface-variant mt-1">{{ cat.articles.count() }} 篇</p>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function triggerScrape() {
+  fetch('/api/admin/scrape', {method: 'POST'})
+    .then(r => r.json())
+    .then(data => {
+      alert('爬取完成！刷新页面查看新闻。');
+      location.reload();
+    })
+    .catch(e => alert('爬取失败: ' + e.message));
+}
+</script>
+{% endblock %}

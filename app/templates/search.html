@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}搜索{% if q %}: {{ q }}{% endif %}{% endblock %}
+
+{% block content %}
+<section class="py-12 px-5 md:px-16 max-w-container mx-auto">
+  <!-- Search Header -->
+  <div class="mb-12">
+    <h1 class="font-serif-cn text-3xl md:text-4xl text-primary mb-6">搜索</h1>
+    <form action="{{ url_for('views.search') }}" method="get" class="max-w-xl">
+      <div class="flex border border-primary">
+        <input type="text" name="q" value="{{ q }}" placeholder="输入关键词搜索新闻..."
+               class="flex-1 px-4 py-3 text-base font-sans-cn focus:outline-none bg-transparent"/>
+        <button type="submit" class="px-6 py-3 bg-primary text-white font-sans-cn text-sm hover:bg-primary/80 transition-colors">
+          搜索
+        </button>
+      </div>
+    </form>
+  </div>
+
+  {% if articles is not none %}
+  <!-- Results -->
+  <div class="mb-6">
+    <p class="font-sans-cn text-sm text-on-surface-variant">
+      找到 <strong class="text-primary">{{ articles.total }}</strong> 条关于 "{{ q }}" 的结果
+    </p>
+  </div>
+
+  <div class="space-y-6">
+    {% for art in articles.items %}
+    <article class="group pb-6 border-b border-outline-variant/10">
+      <a href="{{ url_for('views.article', article_id=art.id) }}">
+        <div class="flex items-center space-x-3 mb-2 font-mono text-xs text-on-surface-variant">
+          <span>{{ art.published_at.strftime('%Y-%m-%d') if art.published_at else '' }}</span>
+          <span class="px-2 py-0.5 border border-outline-variant/50 rounded-sm">{{ art.category.name }}</span>
+        </div>
+        <h2 class="font-serif-cn text-lg text-primary group-hover:opacity-70 transition-opacity mb-2">{{ art.title }}</h2>
+        <p class="font-sans-cn text-sm text-on-surface-variant line-clamp-2">{{ art.summary }}</p>
+      </a>
+    </article>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  {% if articles.pages > 1 %}
+  <nav class="flex justify-center items-center space-x-2 mt-12">
+    {% if articles.has_prev %}
+    <a href="?q={{ q }}&page={{ articles.prev_num }}"
+       class="px-4 py-2 border border-primary text-sm hover:bg-primary hover:text-white transition-all">上一页</a>
+    {% endif %}
+    {% for p in articles.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+      {% if p %}
+        {% if p == articles.page %}
+        <span class="px-4 py-2 bg-primary text-white text-sm">{{ p }}</span>
+        {% else %}
+        <a href="?q={{ q }}&page={{ p }}" class="px-4 py-2 border border-outline-variant/50 text-sm hover:border-primary transition-all">{{ p }}</a>
+        {% endif %}
+      {% else %}
+        <span class="px-2 text-on-surface-variant">...</span>
+      {% endif %}
+    {% endfor %}
+    {% if articles.has_next %}
+    <a href="?q={{ q }}&page={{ articles.next_num }}"
+       class="px-4 py-2 border border-primary text-sm hover:bg-primary hover:text-white transition-all">下一页</a>
+    {% endif %}
+  </nav>
+  {% endif %}
+
+  {% elif q %}
+  <p class="text-on-surface-variant text-center py-12">未找到相关结果</p>
+  {% endif %}
+</section>
+{% endblock %}

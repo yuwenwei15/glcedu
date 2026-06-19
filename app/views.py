@@ -8,9 +8,21 @@ views_bp = Blueprint('views', __name__)
 
 @views_bp.route('/')
 def index():
-    featured = Article.query.order_by(desc(Article.published_at)).limit(5).all()
+    featured = Article.query.filter(
+        Article.cover_image.isnot(None),
+        Article.cover_image != ''
+    ).order_by(desc(Article.published_at)).limit(5).all()
     categories = Category.query.order_by(Category.sort_order).all()
-    return render_template('index.html', featured=featured, categories=categories)
+
+    category_articles = {}
+    for cat in categories:
+        category_articles[cat.code] = Article.query.filter_by(
+            category_id=cat.id
+        ).order_by(desc(Article.published_at)).limit(3).all()
+
+    return render_template('index.html', featured=featured,
+                           categories=categories,
+                           category_articles=category_articles)
 
 
 @views_bp.route('/category/<code>')

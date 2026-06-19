@@ -10,6 +10,58 @@ from app import db
 from app.models import Article, Category, ScrapeLog
 
 
+PDF_BASE_URL = 'https://www.glc.edu.cn'
+
+
+def _pdf_absolute_url(url, base=PDF_BASE_URL):
+    """Resolve a scraped URL against the GLC base URL."""
+    url = url.strip()
+    if url.startswith('http'):
+        return url
+    return base + ('' if url.startswith('/') else '/') + url
+
+
+def extract_pdf_urls(content_html):
+    """Return the absolute PDF URLs referenced inside article content HTML.
+
+    GLC publishes some notices as PDFs, embedded via a JS helper
+    ``showVsbpdfIframe("<url>", ...)`` and/or plain attachment ``<a>`` links.
+    """
+    text = content_html or ''
+    urls = re.findall(r'showVsbpdfIframe\(\s*["\']([^"\']+)["\']', text)
+    urls += re.findall(r'href=["\']([^"\']*\.pdf[^"\']*)["\']', text, flags=re.I)
+
+    seen, result = set(), []
+    for u in urls:
+        abs_u = _pdf_absolute_url(u)
+        if abs_u not in seen:
+            seen.add(abs_u)
+            result.append(abs_u)
+    return result
+
+
+def build_pdf_content(pdf_urls):
+    """Build a clean 'view/download PDF' block to replace an unusable JS embed.
+
+    The GLC PDF cannot be inline-embedded (X-Frame-Options: SAMEORIGIN) nor
+    usefully text-extracted (scanned images), so we surface a direct link that
+    the browser renders natively in a new tab.
+    """
+    if not pdf_urls:
+        return ''
+    primary = pdf_urls[0]
+    return (
+        '<div class="pdf-embed-card">'
+        '<span class="pdf-embed-icon material-symbols-outlined">picture_as_pdf</span>'
+        '<div class="pdf-embed-body">'
+        '<p class="pdf-embed-title">本文以 PDF 附件形式发布</p>'
+        '<p class="pdf-embed-desc">完整内容无法在网页内直接呈现，请点击下方按钮在新窗口查看或下载原文。</p>'
+        f'<a class="pdf-embed-btn" href="{primary}" target="_blank" rel="noopener">查看 / 下载 PDF 原文</a>'
+        '</div>'
+        '</div>'
+    )
+
+
 class GLCSpider:
     def __init__(self):
         self.base_url = current_app.config['SCRAPE_BASE_URL']
@@ -74,10 +126,14 @@ class GLCSpider:
                     if not article_data:
                         continue
 
+                    summary = item.get('summary', '')
+                    if not summary and article_data.get('is_pdf'):
+                        summary = '本文为 PDF 附件公告'
+
                     article = Article(
                         category_id=category.id,
                         title=item['title'],
-                        summary=item.get('summary', ''),
+                        summary=summary,
                         content=article_data['content'],
                         author=article_data.get('author', ''),
                         source=article_data.get('source', ''),
@@ -199,6 +255,15 @@ class GLCSpider:
 
         content_html = str(content_div)
 
+        # PDF notices: GLC embeds the PDF via JS (showVsbpdfIframe) which renders
+        # blank on our site, and the PDF cannot be inline-embedded (X-Frame-Options:
+        # SAMEORIGIN) nor usefully text-extracted (scanned images). Replace the
+        # broken embed with a clean view/download block.
+        pdf_urls = extract_pdf_urls(content_html)
+        is_pdf = bool(pdf_urls)
+        if is_pdf:
+            content_html = build_pdf_content(pdf_urls)
+
         # Extract metadata
         author = ''
         source = ''
@@ -212,15 +277,17 @@ class GLCSpider:
         if source_match:
             source = source_match.group(1).strip()
 
-        # Extract first image as cover
+        # Extract first image as cover (PDF notices carry no usable image)
         cover_image = ''
-        first_img = content_div.find('img')
-        if first_img:
-            cover_image = first_img.get('src', '')
+        if not is_pdf:
+            first_img = content_div.find('img')
+            if first_img:
+                cover_image = first_img.get('src', '')
 
         return {
             'content': content_html,
             'author': author,
             'source': source,
             'cover_image': cover_image,
+            'is_pdf': is_pdf,
         }

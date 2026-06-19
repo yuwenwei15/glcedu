@@ -83,19 +83,34 @@ def list_categories():
 
 @api_bp.route('/admin/scrape', methods=['POST'])
 def trigger_scrape():
-    from app.scraper.spider import GLCSpider
+    from flask import current_app
+    from app.scraper.task_manager import task_manager
 
     category_code = request.args.get('category', '')
     max_pages = request.args.get('pages', 2, type=int)
+    app = current_app._get_current_object()
 
-    spider = GLCSpider()
+    def run_scrape():
+        with app.app_context():
+            from app.scraper.spider import GLCSpider
+            spider = GLCSpider()
+            if category_code:
+                return spider.scrape_category(category_code, max_pages)
+            else:
+                return spider.scrape_all(max_pages)
 
-    if category_code:
-        result = spider.scrape_category(category_code, max_pages)
-    else:
-        result = spider.scrape_all(max_pages)
+    task_id = task_manager.submit(run_scrape)
+    return jsonify({'success': True, 'task_id': task_id, 'message': '爬取任务已启动'})
 
-    return jsonify({'success': True, 'data': result})
+
+@api_bp.route('/admin/scrape/status/<task_id>')
+def scrape_status(task_id):
+    from app.scraper.task_manager import task_manager
+
+    task = task_manager.get(task_id)
+    if not task:
+        return jsonify({'success': False, 'message': '任务不存在'}), 404
+    return jsonify({'success': True, 'data': task})
 
 
 @api_bp.route('/stats')

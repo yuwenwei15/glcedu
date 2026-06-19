@@ -3,19 +3,13 @@
 
 {% block content %}
 <!-- Hero Section -->
-<header class="relative w-full h-[80vh] flex flex-col justify-end px-5 md:px-16 pb-24 pt-32 overflow-hidden">
+<header class="relative w-full h-[56vh] min-h-[440px] flex flex-col justify-end px-5 md:px-16 pb-24 pt-32 overflow-hidden">
   <div class="absolute inset-0 z-[-1] bg-cover bg-center"
-       style="background-image: url('{{ url_for('static', filename='img/fdecdd0a19e8b0275e1f5434d7001d12.jpg') }}');">
+       style="background-image: url('{{ url_for('static', filename='img/5c1815dc7477a4be986aacfd852bda0a.jpg') }}');">
   </div>
   <div class="absolute inset-0 z-[-1] bg-gradient-to-t from-primary-dark/90 via-primary-dark/30 to-primary-dark/10"></div>
   <div class="max-w-container mx-auto w-full">
-    <div class="flex items-center gap-4 mb-6">
-      <img src="{{ url_for('static', filename='img/logo_glc.png') }}" alt="" class="h-16 w-auto drop-shadow-lg hidden md:block"/>
-      <div>
-        <h1 class="font-serif-cn text-3xl md:text-5xl text-white max-w-4xl leading-tight">桂林学院新闻中心</h1>
-        <p class="font-sans-cn text-sm md:text-base text-white/70 mt-2 tracking-widest">GUILIN UNIVERSITY NEWS CENTER</p>
-      </div>
-    </div>
+    <img src="{{ url_for('static', filename='img/702bf92704b887b5aa3fcff41d142c5c.png') }}" alt="桂林学院新闻中心" class="h-24 md:h-32 w-auto max-w-full drop-shadow-lg mb-6"/>
     <p class="font-sans-cn text-base md:text-lg text-white/80 max-w-2xl border-l-2 border-accent pl-6 py-2">
       见证卓越的学术追求，记录丰富的校园生活，探索前沿的创新研究。
     </p>
@@ -27,9 +21,9 @@
 </header>
 
 <!-- Latest News Section -->
-<section class="py-20 px-5 md:px-16 max-w-container mx-auto">
+<section class="py-16 px-5 md:px-16 max-w-container mx-auto">
   <div class="flex items-center gap-3 mb-12">
-    <div class="w-1 h-8 bg-primary rounded-full"></div>
+    <div class="w-1 h-7 bg-primary rounded-full"></div>
     <h2 class="font-serif-cn text-2xl text-primary">最新报道</h2>
   </div>
 
@@ -39,32 +33,37 @@
     <div class="md:col-span-8">
       {% set main = featured[0] %}
       <a href="{{ url_for('views.article', article_id=main.id) }}" class="block group">
-        {% if main.cover_image %}
-        <div class="relative w-full h-[400px] mb-6 overflow-hidden rounded-lg bg-gray-100">
+        <div class="relative w-full h-[400px] mb-5 overflow-hidden rounded-lg bg-gray-100">
           <img src="{{ main.cover_image }}" alt="{{ main.title }}"
                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"/>
-          <div class="absolute top-4 left-4 px-3 py-1 bg-primary text-white text-xs font-sans-cn rounded-full">{{ main.category.name }}</div>
         </div>
-        {% endif %}
-        <div class="flex items-center space-x-4 mb-3 font-mono text-sm text-on-surface-variant">
+        <div class="flex items-center space-x-3 mb-3 font-mono text-xs text-on-surface-variant">
+          <span class="px-2 py-0.5 bg-primary-light text-primary rounded-full">{{ main.category.name }}</span>
           <span>{{ main.published_at.strftime('%Y年%m月%d日') if main.published_at else '' }}</span>
         </div>
         <h2 class="font-serif-cn text-2xl md:text-3xl text-on-surface mb-4 group-hover:text-primary transition-colors">{{ main.title }}</h2>
-        <p class="font-sans-cn text-base text-on-surface-variant max-w-2xl line-clamp-3">{{ main.summary }}</p>
+        <p class="font-sans-cn text-base text-on-surface-variant max-w-2xl line-clamp-3">{{ main.summary or (main.content|striptags|truncate(120)) }}</p>
       </a>
     </div>
 
     <!-- Side Articles -->
-    <div class="md:col-span-4 space-y-6">
+    <div class="md:col-span-4 space-y-5">
       {% for art in featured[1:5] %}
       <article class="group pb-5 border-b border-outline-variant/30">
-        <a href="{{ url_for('views.article', article_id=art.id) }}">
-          <div class="flex items-center space-x-3 mb-2 font-mono text-xs text-on-surface-variant">
-            <span>{{ art.published_at.strftime('%Y-%m-%d') if art.published_at else '' }}</span>
-            <span class="px-2 py-0.5 bg-primary-light text-primary rounded-full text-xs">{{ art.category.name }}</span>
+        <a href="{{ url_for('views.article', article_id=art.id) }}" class="flex gap-4">
+          {% if art.cover_image %}
+          <div class="w-24 h-20 flex-shrink-0 overflow-hidden rounded-md bg-gray-100">
+            <img src="{{ art.cover_image }}" alt="" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy"/>
           </div>
-          <h3 class="font-serif-cn text-lg text-on-surface group-hover:text-primary transition-colors mb-2 line-clamp-2">{{ art.title }}</h3>
-          <p class="font-sans-cn text-sm text-on-surface-variant line-clamp-2">{{ art.summary }}</p>
+          {% endif %}
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center space-x-2 mb-1.5 font-mono text-xs text-on-surface-variant">
+              <span>{{ art.published_at.strftime('%m-%d') if art.published_at else '' }}</span>
+              <span class="px-2 py-0.5 bg-primary-light text-primary rounded-full text-xs">{{ art.category.name }}</span>
+            </div>
+            <h3 class="font-serif-cn text-base text-on-surface group-hover:text-primary transition-colors line-clamp-2">{{ art.title }}</h3>
+            <p class="font-sans-cn text-xs text-on-surface-variant line-clamp-1 mt-1">{{ art.summary or (art.content|striptags|truncate(60)) }}</p>
+          </div>
         </a>
       </article>
       {% endfor %}
@@ -72,8 +71,10 @@
     {% else %}
     <div class="md:col-span-12 text-center py-24">
       <img src="{{ url_for('static', filename='img/logo_glc.png') }}" alt="" class="h-20 mx-auto opacity-20 mb-6"/>
-      <p class="text-on-surface-variant text-lg mb-6">暂无新闻数据</p>
-      <button onclick="triggerScrape()" class="bg-primary text-white px-8 py-3 text-sm font-medium rounded-full hover:bg-primary-dark transition-all shadow-lg shadow-primary/20">
+      <p class="text-on-surface-variant text-lg mb-4">暂无新闻数据</p>
+      <p class="text-on-surface-variant/60 text-sm mb-6" id="scrape-hint">点击下方按钮从桂林学院官网抓取最新新闻</p>
+      <button id="scrape-btn" onclick="triggerScrape()" class="bg-primary text-white px-8 py-3 text-sm font-medium rounded-full hover:bg-primary-dark transition-all shadow-lg shadow-primary/20 inline-flex items-center gap-2">
+        <span class="material-symbols-outlined text-base">download</span>
         立即抓取新闻
       </button>
     </div>
@@ -81,22 +82,38 @@
   </div>
 </section>
 
-<!-- Categories Quick Links -->
+<!-- Categories with Latest Articles -->
 <section class="py-16 px-5 md:px-16 max-w-container mx-auto">
-  <div class="flex items-center gap-3 mb-8">
-    <div class="w-1 h-6 bg-accent rounded-full"></div>
+  <div class="flex items-center gap-3 mb-10">
+    <div class="w-1 h-7 bg-primary rounded-full"></div>
     <h2 class="font-serif-cn text-xl text-on-surface">新闻栏目</h2>
   </div>
-  <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     {% for cat in categories %}
-    <a href="{{ url_for('views.category', code=cat.code) }}"
-       class="block p-6 bg-white border border-outline-variant/30 rounded-lg hover:border-primary hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 group text-center">
-      <div class="w-10 h-10 mx-auto mb-3 rounded-full bg-primary-light flex items-center justify-center group-hover:bg-primary transition-colors">
-        <span class="material-symbols-outlined text-primary group-hover:text-white transition-colors text-lg">newspaper</span>
-      </div>
-      <h3 class="font-sans-cn text-sm font-medium text-on-surface group-hover:text-primary transition-colors">{{ cat.name }}</h3>
-      <p class="font-mono text-xs text-on-surface-variant mt-1">{{ cat.articles.count() }} 篇</p>
-    </a>
+    <div class="bg-white border border-outline-variant/30 rounded-xl p-6 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 group flex flex-col h-full">
+      <a href="{{ url_for('views.category', code=cat.code) }}" class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-primary-light flex items-center justify-center group-hover:bg-primary transition-colors">
+            <span class="material-symbols-outlined text-primary group-hover:text-white transition-colors text-base">newspaper</span>
+          </div>
+          <h3 class="font-sans-cn text-sm font-medium text-on-surface group-hover:text-primary transition-colors">{{ cat.name }}</h3>
+        </div>
+        <span class="font-mono text-xs text-on-surface-variant">{{ cat.articles.count() }} 篇</span>
+      </a>
+      <ul class="space-y-2.5 border-t border-outline-variant/20 pt-4 flex-1">
+        {% for art in category_articles.get(cat.code, []) %}
+        <li>
+          <a href="{{ url_for('views.article', article_id=art.id) }}" class="flex items-start gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors">
+            <span class="material-symbols-outlined text-xs mt-0.5 text-primary/40">arrow_right</span>
+            <span class="line-clamp-1">{{ art.title }}</span>
+          </a>
+        </li>
+        {% endfor %}
+        {% if not category_articles.get(cat.code, []) %}
+        <li class="border border-dashed border-outline-variant/50 rounded-lg py-4 text-center text-xs text-on-surface-variant/50">暂无文章</li>
+        {% endif %}
+      </ul>
+    </div>
     {% endfor %}
   </div>
 </section>
@@ -105,13 +122,43 @@
 {% block scripts %}
 <script>
 function triggerScrape() {
+  const btn = document.getElementById('scrape-btn');
+  const hint = document.getElementById('scrape-hint');
+  btn.disabled = true;
+  btn.innerHTML = '<svg class="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> 正在抓取中...';
+  if (hint) hint.textContent = '正在从桂林学院官网获取最新新闻，请稍候...';
+
   fetch('/api/admin/scrape', {method: 'POST'})
     .then(r => r.json())
     .then(data => {
-      alert('爬取完成！刷新页面查看新闻。');
-      location.reload();
+      if (data.task_id) {
+        pollTask(data.task_id, btn, hint);
+      }
     })
-    .catch(e => alert('爬取失败: ' + e.message));
+    .catch(e => {
+      if (hint) hint.textContent = '启动失败: ' + e.message;
+      btn.disabled = false;
+      btn.innerHTML = '<span class="material-symbols-outlined text-base">download</span> 立即抓取新闻';
+    });
+}
+
+function pollTask(taskId, btn, hint) {
+  const interval = setInterval(() => {
+    fetch('/api/admin/scrape/status/' + taskId)
+      .then(r => r.json())
+      .then(data => {
+        if (data.data.status === 'success') {
+          clearInterval(interval);
+          if (hint) hint.textContent = '抓取完成，正在刷新页面...';
+          location.reload();
+        } else if (data.data.status === 'failed') {
+          clearInterval(interval);
+          if (hint) hint.textContent = '抓取失败: ' + (data.data.error || '未知错误');
+          btn.disabled = false;
+          btn.innerHTML = '<span class="material-symbols-outlined text-base">refresh</span> 重新抓取';
+        }
+      });
+  }, 3000);
 }
 </script>
 {% endblock %}

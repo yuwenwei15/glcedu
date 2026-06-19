@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>桂林学院新闻中心 | 见证卓越</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&amp;family=Noto+Serif+SC:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Mist layer for depth */
+        .mist-layer {
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            background-color: rgba(246, 243, 241, 0.8);
+        }
+        /* Custom image grain filter */
+        .grain-overlay::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.05;
+            pointer-events: none;
+            mix-blend-mode: multiply;
+        }
+        /* Asymmetric scroll reveals */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .reveal-up.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(-40px);
+            transition: all 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .reveal-right.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        /* Premium Button Style */
+        .btn-editorial {
+            border: 1px solid #000000;
+            background: transparent;
+            color: #000000;
+            transition: all 0.4s ease;
+        }
+        .btn-editorial:hover {
+            background: #000000;
+            color: #f9f9f9;
+        }
+
+        /* Hide scrollbar for horizontal scroll area but keep functionality */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-primary": "#c6c6c6",
+                      "surface-variant": "#e2e2e2",
+                      "primary-fixed": "#e2e2e2",
+                      "surface-container": "#eeeeee",
+                      "secondary": "#545e75",
+                      "on-tertiary-fixed": "#1b1b1b",
+                      "secondary-fixed-dim": "#bbc7e1",
+                      "on-primary": "#ffffff",
+                      "surface-tint": "#5e5e5e",
+                      "background": "#f9f9f9",
+                      "inverse-surface": "#303030",
+                      "error": "#ba1a1a",
+                      "on-secondary": "#ffffff",
+                      "tertiary": "#000000",
+                      "on-error-container": "#93000a",
+                      "surface-container-low": "#f3f3f3",
+                      "primary-fixed-dim": "#c6c6c6",
+                      "on-primary-fixed-variant": "#474747",
+                      "surface-dim": "#dadada",
+                      "on-secondary-fixed-variant": "#3c475d",
+                      "primary": "#000000",
+                      "on-surface": "#1b1b1b",
+                      "surface-bright": "#f9f9f9",
+                      "on-secondary-container": "#5a647c",
+                      "surface-container-high": "#e8e8e8",
+                      "inverse-on-surface": "#f1f1f1",
+                      "error-container": "#ffdad6",
+                      "on-primary-fixed": "#1b1b1b",
+                      "surface": "#f9f9f9",
+                      "on-background": "#1b1b1b",
+                      "surface-container-highest": "#e2e2e2",
+                      "on-tertiary-fixed-variant": "#474747",
+                      "outline": "#7e7576",
+                      "on-error": "#ffffff",
+                      "tertiary-container": "#1b1b1b",
+                      "tertiary-fixed": "#e2e2e2",
+                      "secondary-container": "#d7e2fe",
+                      "on-tertiary-container": "#848484",
+                      "tertiary-fixed-dim": "#c6c6c6",
+                      "outline-variant": "#cfc4c5",
+                      "primary-container": "#1b1b1b",
+                      "on-tertiary": "#ffffff",
+                      "secondary-fixed": "#d7e2fe",
+                      "on-secondary-fixed": "#101c2f",
+                      "on-surface-variant": "#4c4546",
+                      "on-primary-container": "#848484",
+                      "surface-container-lowest": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "unit": "4px",
+                      "gutter": "32px",
+                      "container-max": "1440px",
+                      "section-gap": "128px",
+                      "margin-desktop": "64px",
+                      "margin-mobile": "20px"
+              },
+              "fontFamily": {
+                      "body-md": [
+                              "'Noto Sans SC'", "'PingFang SC'", "sans-serif"
+                      ],
+                      "meta-data": [
+                              "JetBrains Mono"
+                      ],
+                      "display-lg-mobile": [
+                              "'Noto Serif SC'", "'STZhongsong'", "serif"
+                      ],
+                      "headline-md": [
+                              "'Noto Serif SC'", "'STZhongsong'", "serif"
+                      ],
+                      "display-lg": [
+                              "'Noto Serif SC'", "'STZhongsong'", "serif"
+                      ],
+                      "headline-xl-mobile": [
+                              "'Noto Serif SC'", "'STZhongsong'", "serif"
+                      ],
+                      "body-lg": [
+                              "'Noto Sans SC'", "'PingFang SC'", "sans-serif"
+                      ],
+                      "headline-xl": [
+                              "'Noto Serif SC'", "'STZhongsong'", "serif"
+                      ],
+                      "label-sm": [
+                              "JetBrains Mono"
+                      ]
+              },
+              "fontSize": {
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.8",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "meta-data": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg-mobile": [
+                              "44px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "display-lg": [
+                              "64px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-xl-mobile": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-lg": [
+                              "20px",
+                              {
+                                      "lineHeight": "1.8",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-xl": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "0.1em",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-surface antialiased overflow-x-hidden selection:bg-tertiary selection:text-surface">
+<!-- Global Shader Background -->
+<div class="fixed inset-0 z-[-1] pointer-events-none opacity-[0.15]">
+</div>
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface/80 backdrop-blur-xl border-b border-outline-variant/20 dark:border-outline/20 transition-all duration-300" id="global-nav">
+<div class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto">
+<!-- Brand -->
+<a class="font-headline-md text-headline-md font-medium tracking-tight text-primary dark:text-on-primary-fixed hover:opacity-70 transition-opacity duration-300" href="#">桂林学院</a>
+<!-- Desktop Nav -->
+<div class="hidden md:flex space-x-8 items-center">
+<a class="text-primary dark:text-primary-fixed border-b border-primary dark:border-primary-fixed pb-1 font-body-md text-body-md tracking-widest hover:text-primary transition-colors duration-300 opacity-70" href="#">
+                    深度专题
+                </a>
+<a class="text-on-surface-variant dark:text-on-tertiary-container font-body-md text-body-md tracking-widest hover:text-primary dark:hover:text-primary-fixed transition-colors duration-300" href="#">
+                    学术前沿
+                </a>
+<a class="text-on-surface-variant dark:text-on-tertiary-container font-body-md text-body-md tracking-widest hover:text-primary dark:hover:text-primary-fixed transition-colors duration-300" href="#">
+                    校园生活
+                </a>
+<a class="text-on-surface-variant dark:text-on-tertiary-container font-body-md text-body-md tracking-widest hover:text-primary dark:hover:text-primary-fixed transition-colors duration-300" href="#">
+                    创新与研究
+                </a>
+</div>
+<!-- Actions -->
+<div class="flex items-center space-x-4">
+<button class="hidden md:flex items-center justify-center text-primary dark:text-on-primary-fixed hover:opacity-70 transition-opacity duration-300">
+<span class="material-symbols-outlined" style="font-size: 24px;">search</span>
+</button>
+<button class="flex items-center justify-center text-primary dark:text-on-primary-fixed hover:opacity-70 transition-opacity duration-300">
+<span class="material-symbols-outlined" data-icon="menu" style="font-size: 24px;">menu</span>
+</button>
+</div>
+</div>
+</nav>
+<!-- Section 1: Cinematic Hero -->
+<header class="relative w-full h-screen flex flex-col justify-end px-margin-mobile md:px-margin-desktop pb-32 pt-32 overflow-hidden">
+<!-- Background Image -->
+<div class="absolute inset-0 z-[-1] bg-cover bg-center grain-overlay" data-alt="A breathtaking, cinematic ultra-wide photograph of a serene campus nestled among the iconic karst mountains of Guilin, China, cloaked in morning mist. The aesthetic is minimal, high-end editorial, utilizing soft, diffused light mode illumination that emphasizes natural textures and atmospheric perspective. The color palette relies on subtle earthy tones, muted greens, and expansive negative space, creating a sense of tranquil academic excellence." style="background-image: url('https://www.glc.edu.cn/virtual_attach_file.vsb?afc=5Lm9CinR-aL7UDMQN7YL4UbLNW2oz9q4n7Wknm7sLRnVUzl0gihFp2hmCIa0USyZn1hkoSy4nRMRozAVMR9YU4CPLlWkM4WfMlrRUzLDoRfFMR9DMlr7oRMFLzU8MNCJqjfjo4OeoDP/_dN0qIbtpYyxLYyxLYbw62p8c&oid=1401022929&e=.jpg');">
+</div>
+<!-- Gradient overlay to ensure text legibility at bottom -->
+<div class="absolute inset-0 z-[-1] bg-gradient-to-t from-surface/90 via-surface/30 to-transparent"></div>
+<div class="max-w-container-max mx-auto w-full reveal-up active">
+<h1 class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg text-primary max-w-4xl leading-tight mb-6">桂林学院新闻与故事</h1>
+<p class="font-body-md text-body-md md:font-body-lg md:text-body-lg text-on-surface-variant max-w-2xl border-l border-primary pl-6 py-2">
+                在这里，我们见证卓越的学术追求，记录丰富的校园生活，探索前沿的创新研究。
+            </p>
+</div>
+<!-- Scroll Indicator -->
+<div class="absolute bottom-12 left-margin-mobile md:left-margin-desktop flex items-center space-x-4 animate-bounce opacity-60">
+<span class="font-body-md text-sm uppercase tracking-widest text-primary">向下滚动探索</span>
+<span class="material-symbols-outlined text-primary">arrow_downward</span>
+</div>
+</header>
+<!-- Section 2: Story Stream (Editorial Feed) -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Featured Story (Left Asymmetric) -->
+<div class="md:col-span-8 reveal-up">
+<div class="relative w-full h-[614px] mb-8 overflow-hidden group">
+<div class="absolute top-4 left-4 z-10 bg-primary/10 backdrop-blur-md px-3 py-1 text-primary font-body-md text-sm font-medium border border-primary/20 tracking-widest">
+                        卓越学术
+                    </div>
+<img alt="Featured Story Image" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 grain-overlay" data-alt="A sophisticated, high-contrast close-up photograph of advanced AI neural network visualizations displayed on a modern glass interface, set within a bright, minimalist academic lab. The lighting is crisp and cool, adhering to a premium light-mode aesthetic with stark whites and deep blacks. The composition uses asymmetric framing to emphasize the intersection of modern technology and rigorous research, exuding an aura of intellectual breakthrough." src="https://www.glc.edu.cn/virtual_attach_file.vsb?afc=5MmMC7LmfVU8laoQlVRUmlPnNLYLN-q4MzLYnRvsnlUbozl0gihFp2hmCIa0LYy8oShkUShVLRV7M87sM8W2L7WkLmMRnNLPLNW7LNV7LNWFMN-bnz9aLNVFLNLsMl7Jqjfjo4OeoDP/_dN0qIbtpYyxLYyxLYbw62p8c&oid=1401022929&e=.jpg"/>
+</div>
+<div class="flex items-center space-x-4 mb-4 font-meta-data text-meta-data text-on-surface-variant">
+<span>2024年10月24日</span>
+<span class="w-1 h-1 bg-primary rounded-full"></span>
+<span>8 分钟阅读</span>
+</div>
+<h2 class="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl text-primary mb-4 pr-12">桂林学院获批多项国家级及自治区级一流本科专业建设点</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8 max-w-2xl">
+                    学校持续深化教育教学改革，专业建设取得重大突破，为培养高素质应用型人才奠定坚实基础。
+                </p>
+<button class="btn-editorial font-body-md text-sm font-medium uppercase px-8 py-4 tracking-widest">
+                    阅读全文
+                </button>
+</div>
+<!-- Side Editorials -->
+<div class="md:col-span-4 space-y-16 mt-16 md:mt-0 reveal-right">
+<!-- Article 1 -->
+<article class="group cursor-pointer">
+<div class="relative w-full h-48 mb-6 overflow-hidden">
+<div class="absolute top-3 left-3 z-10 bg-secondary-container/80 backdrop-blur-sm px-2 py-1 text-on-secondary-container font-body-md text-xs tracking-widest">
+                            创新研究
+                        </div>
+<img alt="Student life" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 filter grayscale hover:grayscale-0" data-alt="A candid, editorial-style photograph of university students engaged in intense academic discussion around a minimalist concrete table. The scene is lit by soft, natural daylight filtering through large windows, creating a bright, airy light-mode feel. The composition leverages significant negative space and sharp architectural lines to project a modern, premium academic environment." src="https://www.glc.edu.cn/virtual_attach_file.vsb?afc=5nzACVMmARLN7iUQmU4MzWkLNU4U8lqbLRNDUzTfozWVnlL0gihFp2hmCIa0LSy8LYhVM1ybL7LYMmW2L8lbMNW7UzM7oRv8LmU8U4MRUmAFLmL4M7-iL8WFLmWkUNCJqjfjo4OeoDP/_dN0qIbtpYyxLYyxLYbw62p8c&oid=1401022929&e=.jpg"/>
+</div>
+<div class="flex items-center space-x-3 mb-3 font-meta-data text-meta-data text-on-surface-variant text-xs">
+<span>2024年10月22日</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary group-hover:opacity-70 transition-opacity mb-4">
+                        我校科研团队在智慧旅游领域取得重要进展
+                    </h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-3">
+                        依托桂林丰富的文旅资源，团队致力于利用大数据与AI技术提升旅游体验，服务地方经济发展。
+                    </p>
+</article>
+<!-- Article 2 -->
+<article class="group cursor-pointer border-t border-outline-variant pt-8"><div class="relative w-full h-48 mb-6 overflow-hidden"><img alt="Modern Building" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://www.glc.edu.cn/virtual_attach_file.vsb?afc=5UmCCZMRUsolnkUQlUPL8-8MzA7LNQqVo7L4o7UPLR6kMl70gihFp2hmCIa0MShRM1ysLkyiMmlaoRvinRW2LmUZU4V2L4VRnRUYLNUsM4MFLlU8nR-aL4VFLl7aMmCJqjfjo4OeoDP/_dN0qIbtpYyxLYyxLYbw62p8c&oid=1401022929&e=.jpg"/></div>
+<div class="absolute top-3 left-3 z-10 bg-surface-container-high/80 backdrop-blur-sm px-2 py-1 text-on-surface font-label-sm text-label-sm hidden">
+                        校园生活
+                    </div>
+<div class="flex items-center space-x-3 mb-3 font-meta-data text-meta-data text-on-surface-variant text-xs">
+<span>2024年10月20日</span>
+<span class="px-2 py-0.5 border border-outline-variant rounded-sm font-body-md">校园生活</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary group-hover:opacity-70 transition-opacity mb-4">
+                        “金秋桂院”校园文化艺术节圆满落幕
+                    </h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-3">
+                        丰富多彩的社团活动与文艺展演，展现了桂院学子青春昂扬的精神风貌与活力。
+                    </p>
+</article>
+</div>
+</div>
+</section>
+<!-- Section 3: Heritage & Milestones -->
+<section class="relative py-section-gap w-full overflow-hidden">
+<!-- Light paper-texture background and mist shader effect -->
+<div class="absolute inset-0 z-[-1] bg-[#F6F3F1] mist-layer grain-overlay"></div>
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop relative z-10">
+<div class="mb-24 reveal-up text-center">
+<h2 class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg text-primary mb-6">传承与里程碑</h2>
+<p class="font-body-md text-body-md md:font-body-lg md:text-body-lg text-on-surface-variant max-w-2xl mx-auto">
+                一次穿越时间的旅程，记录我们机构从创立到现代的演变。
+            </p>
+</div>
+<div class="space-y-32">
+<!-- Milestone 1 -->
+<div class="flex flex-col md:flex-row items-center gap-16 reveal-up">
+<div class="w-full md:w-1/2">
+<div class="relative w-full aspect-[4/3] overflow-hidden group">
+<img alt="Founding Principles" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" src="https://www.glc.edu.cn/virtual_attach_file.vsb?afc=5nmlCinllsMRU4MQl7DoR9DU874U49qDM8CanRQ7MzQ2Lm-0gihFp2hmCIa0LSy8Mkh7nSyDUz67Lm67U8-ZLz9ZL4f2nRnRnRUZMNLZM4rFLRTfLzGPMRTFLl78LzGJqjfjo4OeoDP/_dN0qIbtpYyxLYyxLYbw62p8c&oid=1401022929&e=.jpg"/>
+</div>
+</div>
+<div class="w-full md:w-1/2 space-y-6">
+<div class="font-meta-data text-2xl md:text-4xl text-primary/40 tracking-widest">2001</div>
+<h3 class="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl text-primary">漓江学院建校</h3>
+<p class="font-body-md text-body-md md:font-body-lg md:text-body-lg text-on-surface-variant">
+                        广西师范大学漓江学院成立，开启办学历程。
+                    </p>
+</div>
+</div>
+<!-- Milestone 2 (Reversed) -->
+<div class="flex flex-col md:flex-row-reverse items-center gap-16 reveal-up">
+<div class="w-full md:w-1/2">
+<div class="relative w-full aspect-[4/3] overflow-hidden group">
+<img alt="Campus Expansion" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" src="https://www.glc.edu.cn/virtual_attach_file.vsb?afc=5M4WCRM7W2M4vZUQNnVolLZMll4LR9q4M8MfUmA2L47inmG0gihFp2hmCIa0nky4LkyaokyPM4rfoR7YU8-YU8U4LmTfL8r7M4N8M47aMRQFnz9PnNMRnRWFLll4M7UJqjfjo4OeoDP/_dN0qIbtpYyxLYyxLYbw62p8c&oid=1401022929&e=.jpg"/>
+</div>
+</div>
+<div class="w-full md:w-1/2 space-y-6 text-left md:text-right">
+<div class="font-meta-data text-2xl md:text-4xl text-primary/40 tracking-widest">2004</div>
+<h3 class="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl text-primary">首批独立学院</h3>
+<p class="font-body-md text-body-md md:font-body-lg md:text-body-lg text-on-surface-variant">
+                        获教育部确认，成为全国首批独立学院之一。
+                    </p>
+</div>
+</div>
+<!-- Milestone 3 -->
+<div class="flex flex-col md:flex-row items-center gap-16 reveal-up">
+<div class="w-full md:w-1/2">
+<div class="relative w-full aspect-[4/3] overflow-hidden group">
+<img alt="Student Life Development" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" src="https://www.glc.edu.cn/virtual_attach_file.vsb?afc=5oznC7Lm78M4AVLQRU4LlLYnm74LRLqiLRM7nRvZMm9aUzN0gihFp2hmCIa0L1hVLky8USybL4GDnRWknzMRnN74nl-snRfRUzliM4QkLNnFMNL4nmlPLzfFLzUiLR7Jqjfjo4OeoDP/_dN0qIbtpYyxLYyxLYbw62p8c&oid=1401022929&e=.jpg"/>
+</div>
+</div>
+<div class="w-full md:w-1/2 space-y-6">
+<div class="font-meta-data text-2xl md:text-4xl text-primary/40 tracking-widest">2021</div>
+<h3 class="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl text-primary">转设更名</h3>
+<p class="font-body-md text-body-md md:font-body-lg md:text-body-lg text-on-surface-variant">
+                        成功转设为独立建制的普通本科高校，正式更名为“桂林学院”。
+                    </p>
+</div>
+</div>
+<!-- Milestone 4 (Reversed) -->
+<div class="flex flex-col md:flex-row-reverse items-center gap-16 reveal-up">
+<div class="w-full md:w-1/2">
+<div class="relative w-full aspect-[4/3] overflow-hidden group">
+<img alt="Modern Campus" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" src="https://www.glc.edu.cn/virtual_attach_file.vsb?afc=5Lm9CinR-aL7UDMQN7YL4UbLNW2oz9q4n7Wknm7sLRnVUzl0gihFp2hmCIa0USyZn1hkoSy4nRMRozAVMR9YU4CPLlWkM4WfMlrRUzLDoRfFMR9DMlr7oRMFLzU8MNCJqjfjo4OeoDP/_dN0qIbtpYyxLYyxLYbw62p8c&oid=1401022929&e=.jpg"/>
+</div>
+</div>
+<div class="w-full md:w-1/2 space-y-6 text-left md:text-right">
+<div class="font-meta-data text-2xl md:text-4xl text-primary/40 tracking-widest">现在</div>
+<h3 class="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl text-primary">应用型大学新范式</h3>
+<p class="font-body-md text-body-md md:font-body-lg md:text-body-lg text-on-surface-variant">
+                        占地830余亩，致力于培养高素质应用型人才，拥有51个本科专业。
+                    </p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="relative w-full overflow-hidden bg-tertiary dark:bg-tertiary-container">
+<div class="flex flex-col md:flex-row justify-between items-start w-full px-margin-mobile md:px-margin-desktop py-section-gap max-w-container-max mx-auto z-10 relative">
+<div class="mb-12 md:mb-0">
+<h2 class="font-headline-xl text-headline-xl text-surface dark:text-on-tertiary-container italic mb-6">
+                    桂林学院
+                </h2>
+<p class="font-body-lg text-body-lg text-surface-variant/80 max-w-sm mb-12">
+                    见证卓越。记录传统与创新的交汇。
+                </p>
+<p class="text-surface-variant/60 font-body-md text-sm">© 2024 桂林学院新闻中心. 保留所有权利.</p>
+</div>
+<div class="flex flex-col space-y-4 items-start md:items-end">
+<a class="text-surface-variant/60 font-body-md text-sm hover:text-on-primary transition-all duration-500 hover:tracking-widest" href="#">编辑方针</a>
+<a class="text-surface-variant/60 font-body-md text-sm hover:text-on-primary transition-all duration-500 hover:tracking-widest" href="#">往期存档</a>
+<a class="text-surface-variant/60 font-body-md text-sm hover:text-on-primary transition-all duration-500 hover:tracking-widest" href="#">招生信息</a>
+<a class="text-surface-bright font-body-md text-sm underline decoration-1 underline-offset-4 hover:text-on-primary transition-all duration-500" href="#">联系我们</a>
+</div>
+</div>
+<!-- Scroll-triggered mountain silhouette placeholder -->
+<div class="absolute inset-0 w-full h-full pointer-events-none opacity-40 transition-opacity duration-1000 z-0" id="footer-mountain">
+</div>
+</footer>
+<!-- Simple Intersection Observer for Animations -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal-up, .reveal-right').forEach((el) => {
+                observer.observe(el);
+            });
+
+            // Nav blur on scroll
+            const nav = document.getElementById('global-nav');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    nav.classList.add('shadow-sm');
+                    nav.classList.replace('py-4', 'py-2');
+                } else {
+                    nav.classList.remove('shadow-sm');
+                    nav.classList.replace('py-2', 'py-4');
+                }
+            });
+        });
+    </script>
+</body></html>

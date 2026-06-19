@@ -1,3 +1,8 @@
+body {
+  font-size: 16px;
+  line-height: 1.75;
+}
+
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
 }
@@ -72,3 +77,50 @@ nav a.active {
 .section-divider {
   background: linear-gradient(135deg, #e8f4f6 0%, #edf7f1 100%);
 }
+
+/* PDF attachment notice — articles whose original is a PDF */
+.pdf-embed-card {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.75rem 2rem;
+  margin: 1.5rem 0;
+  background: linear-gradient(135deg, #e8f4f6 0%, #f5f7fa 100%);
+  border: 1px solid #d1d9e0;
+  border-left: 4px solid #0e5e6e;
+  border-radius: 0.75rem;
+  flex-wrap: wrap;
+}
+.pdf-embed-card .pdf-embed-icon {
+  font-size: 3rem !important;
+  color: #0e5e6e;
+  flex-shrink: 0;
+}
+.pdf-embed-card .pdf-embed-body { flex: 1 1 16rem; min-width: 0; }
+.pdf-embed-card .pdf-embed-title {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0 0 0.25rem;
+  line-height: 1.4;
+}
+.pdf-embed-card .pdf-embed-desc {
+  font-size: 0.875rem;
+  color: #4a5568;
+  margin: 0 0 0.85rem;
+  line-height: 1.6;
+}
+.pdf-embed-card .pdf-embed-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.4rem;
+  background: #0e5e6e;
+  color: #fff !important;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  text-decoration: none !important;
+  transition: background 0.2s ease;
+}
+.pdf-embed-card .pdf-embed-btn:hover { background: #0a4a57; }

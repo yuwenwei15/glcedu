@@ -6,3 +6,6 @@ __pycache__/
 *.db
 venv/
 env/
+
+# Node / Tailwind build
+node_modules/

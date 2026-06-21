@@ -1,0 +1,14 @@
+{
+  "name": "glcedu-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "桂林学院新闻网前端样式构建（Tailwind 本地编译，替代 Play CDN）",
+  "scripts": {
+    "build:css": "tailwindcss -i ./app/static/css/tailwind-input.css -o ./app/static/css/tailwind.css --minify",
+    "watch:css": "tailwindcss -i ./app/static/css/tailwind-input.css -o ./app/static/css/tailwind.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.9",
+    "tailwindcss": "^3.4.17"
+  }
+}

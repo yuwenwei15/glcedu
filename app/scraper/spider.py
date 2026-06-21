@@ -77,9 +77,19 @@ class GLCSpider:
         return resp.text
 
     def scrape_category(self, category_code, max_pages=3):
+        """抓取某分类。
+
+        max_pages 传 None / 0 / 负数时为「全量」：一直翻页直到翻到底
+        （_build_list_url 返回 None）或某页无文章为止，用于一次性回填历史新闻。
+        正整数则只抓前 N 页，用于日常增量。
+        """
         category = Category.query.filter_by(code=category_code).first()
         if not category:
             return
+
+        # 非官网分类（如 MediaCrawler 的新媒体动态）不在此处理
+        if not category.url_path:
+            return None
 
         log = ScrapeLog(category_id=category.id, started_at=datetime.now())
         db.session.add(log)
@@ -88,8 +98,19 @@ class GLCSpider:
         total_found = 0
         total_new = 0
 
+        # 全量模式：翻到底自动停；SAFETY_PAGE_CAP 兜底，防翻页公式异常导致死循环
+        crawl_all = (max_pages is None) or (max_pages <= 0)
+        SAFETY_PAGE_CAP = 500
+
         try:
-            for page_num in range(1, max_pages + 1):
+            page_num = 0
+            while True:
+                page_num += 1
+                if not crawl_all and page_num > max_pages:
+                    break
+                if page_num > SAFETY_PAGE_CAP:
+                    break
+
                 url = self._build_list_url(category, page_num)
                 if not url:
                     break
@@ -170,6 +191,10 @@ class GLCSpider:
         return results
 
     def _build_list_url(self, category, page_num):
+        # url_path 为空说明该分类不来自官网（如 MediaCrawler 抓取的新媒体分类），跳过
+        if not category.url_path:
+            return None
+
         if page_num == 1:
             return self.base_url + category.url_path
 

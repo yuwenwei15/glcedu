@@ -33,8 +33,8 @@
     <div class="md:col-span-8">
       {% set main = featured[0] %}
       <a href="{{ url_for('views.article', article_id=main.id) }}" class="block group">
-        <div class="relative w-full h-[400px] mb-5 overflow-hidden rounded-lg bg-gray-100">
-          <img src="{{ main.cover_image }}" alt="{{ main.title }}"
+        <div class="relative w-full h-[400px] mb-5 overflow-hidden rounded-lg img-skeleton">
+          <img src="{{ main.cover_image | cover_url }}" alt="{{ main.title }}"
                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"/>
         </div>
         <div class="flex items-center space-x-3 mb-3 font-mono text-xs text-on-surface-variant">
@@ -52,8 +52,8 @@
       <article class="group pb-5 border-b border-outline-variant/30">
         <a href="{{ url_for('views.article', article_id=art.id) }}" class="flex gap-4">
           {% if art.cover_image %}
-          <div class="w-24 h-20 flex-shrink-0 overflow-hidden rounded-md bg-gray-100">
-            <img src="{{ art.cover_image }}" alt="" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy"/>
+          <div class="w-24 h-20 flex-shrink-0 overflow-hidden rounded-md img-skeleton">
+            <img src="{{ art.cover_image | cover_url }}" alt="" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy"/>
           </div>
           {% endif %}
           <div class="flex-1 min-w-0">
@@ -98,7 +98,7 @@
           </div>
           <h3 class="font-sans-cn text-sm font-medium text-on-surface group-hover:text-primary transition-colors">{{ cat.name }}</h3>
         </div>
-        <span class="font-mono text-xs text-on-surface-variant">{{ cat.articles.count() }} 篇</span>
+        <span class="font-mono text-xs text-on-surface-variant">{{ category_counts.get(cat.code, 0) }} 篇</span>
       </a>
       <ul class="space-y-2.5 border-t border-outline-variant/20 pt-4 flex-1">
         {% for art in category_articles.get(cat.code, []) %}
@@ -128,11 +128,15 @@ function triggerScrape() {
   btn.innerHTML = '<svg class="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> 正在抓取中...';
   if (hint) hint.textContent = '正在从桂林学院官网获取最新新闻，请稍候...';
 
-  fetch('/api/admin/scrape', {method: 'POST'})
+  fetch('/api/bootstrap-scrape', {method: 'POST'})
     .then(r => r.json())
     .then(data => {
       if (data.task_id) {
         pollTask(data.task_id, btn, hint);
+      } else {
+        if (hint) hint.textContent = data.message || '启动失败';
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-symbols-outlined text-base">download</span> 立即抓取新闻';
       }
     })
     .catch(e => {
@@ -144,7 +148,7 @@ function triggerScrape() {
 
 function pollTask(taskId, btn, hint) {
   const interval = setInterval(() => {
-    fetch('/api/admin/scrape/status/' + taskId)
+    fetch('/api/scrape/status/' + taskId)
       .then(r => r.json())
       .then(data => {
         if (data.data.status === 'success') {

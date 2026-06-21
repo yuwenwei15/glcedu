@@ -25,6 +25,10 @@ class Category(db.Model):
 
 class Article(db.Model):
     __tablename__ = 'article'
+    __table_args__ = (
+        db.Index('ix_article_cat_pub', 'category_id', 'published_at'),
+        db.Index('ix_article_published', 'published_at'),
+    )
 
     id = db.Column(db.Integer, primary_key=True)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
@@ -38,6 +42,8 @@ class Article(db.Model):
     published_at = db.Column(db.DateTime)
     view_count = db.Column(db.Integer, default=0)
     local_view_count = db.Column(db.Integer, default=0)
+    ai_summary = db.Column(db.Text)
+    ai_summary_at = db.Column(db.DateTime)
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
@@ -53,6 +59,7 @@ class Article(db.Model):
             'category': self.category.name if self.category else None,
             'category_code': self.category.code if self.category else None,
             'view_count': self.local_view_count,
+            'ai_summary': self.ai_summary,
         }
         if include_content:
             data['content'] = self.content

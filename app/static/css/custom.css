@@ -3,6 +3,104 @@ body {
   line-height: 1.75;
 }
 
+/* Dark mode overrides */
+.dark body {
+  background-color: #1a1a2e;
+  color: #e2e8f0;
+}
+
+.dark #global-nav {
+  background: rgba(26, 26, 46, 0.92);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.dark footer {
+  background: linear-gradient(to bottom, #0f0f1e, #0a0a18);
+}
+
+.dark .bg-white,
+.dark .bg-background {
+  background-color: #1e1e36 !important;
+}
+
+.dark .bg-primary-light\/50,
+.dark .bg-primary-light\/40,
+.dark .bg-primary-light\/30 {
+  background-color: rgba(14, 94, 110, 0.15) !important;
+}
+
+.dark .bg-primary-light {
+  background-color: rgba(14, 94, 110, 0.2) !important;
+}
+
+.dark .bg-primary\/5 {
+  background-color: rgba(14, 94, 110, 0.12) !important;
+}
+
+.dark .text-on-surface {
+  color: #e2e8f0 !important;
+}
+
+.dark .text-on-surface-variant {
+  color: #a0aec0 !important;
+}
+
+.dark .border-outline-variant\/30,
+.dark .border-outline-variant\/20,
+.dark .border-outline-variant\/10,
+.dark .border-outline-variant\/50 {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.dark .border-primary\/10,
+.dark .border-primary\/20 {
+  border-color: rgba(14, 94, 110, 0.3) !important;
+}
+
+.dark article.group,
+.dark .card-lift {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.dark .bg-gray-100 {
+  background-color: #2a2a44 !important;
+}
+
+.dark .prose p,
+.dark .prose li {
+  color: #cbd5e0;
+}
+
+.dark .prose h1,
+.dark .prose h2,
+.dark .prose h3,
+.dark .prose h4 {
+  color: #63b3be;
+}
+
+.dark input[type="text"] {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(14, 94, 110, 0.4);
+  color: #e2e8f0;
+}
+
+.dark input[type="text"]::placeholder {
+  color: rgba(160, 174, 192, 0.6);
+}
+
+.dark .img-skeleton {
+  background: #2a2a44;
+}
+
+.dark .img-skeleton::after {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
+}
+
+/* Reading progress bar */
+#reading-progress {
+  transition: width 80ms linear;
+}
+
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
 }
@@ -71,6 +169,24 @@ nav a.active {
 .pagination-active {
   background: #0e5e6e;
   color: white;
+}
+
+/* Image skeleton placeholder + fade-in on load */
+.img-skeleton {
+  background: linear-gradient(90deg, #e8ecef 25%, #f0f3f5 50%, #e8ecef 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+.img-skeleton img {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.img-skeleton img.loaded {
+  opacity: 1;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 /* Subtle background pattern for section separators */

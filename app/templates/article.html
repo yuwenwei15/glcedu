@@ -2,6 +2,9 @@
 {% block title %}{{ article.title }}{% endblock %}
 
 {% block content %}
+<!-- Reading Progress Bar -->
+<div id="reading-progress" class="fixed top-0 left-0 h-[3px] bg-gradient-to-r from-primary to-secondary z-[60] w-0 transition-none"></div>
+
 <article class="py-12 px-5 md:px-16 max-w-container mx-auto">
   <div class="max-w-3xl mx-auto">
     <!-- Breadcrumb -->
@@ -28,6 +31,24 @@
       <span class="flex items-center gap-1"><span class="material-symbols-outlined text-base text-primary">person</span>{{ article.author }}</span>
       {% endif %}
       <span class="flex items-center gap-1"><span class="material-symbols-outlined text-base text-primary">visibility</span>{{ article.local_view_count }}</span>
+    </div>
+
+    <!-- AI 总结 -->
+    <div class="mb-10 rounded-2xl border border-primary/20 bg-primary-light/40 overflow-hidden" id="ai-summary-card">
+      <div class="flex items-center justify-between px-6 py-4 bg-primary/5">
+        <div class="flex items-center gap-2 font-sans-cn text-sm font-medium text-primary">
+          <span class="material-symbols-outlined text-base">auto_awesome</span>
+          AI 新闻总结
+        </div>
+        <button id="ai-summary-btn"
+                class="inline-flex items-center gap-1.5 px-4 py-1.5 bg-primary text-white text-xs rounded-full hover:bg-primary-dark transition-all disabled:opacity-60 disabled:cursor-not-allowed">
+          <span class="material-symbols-outlined text-sm" id="ai-summary-icon">auto_awesome</span>
+          <span id="ai-summary-btn-text">{{ '重新生成' if article.ai_summary else '生成 AI 总结' }}</span>
+        </button>
+      </div>
+      <div id="ai-summary-body" class="px-6 py-4 font-sans-cn text-sm text-on-surface leading-relaxed {% if not article.ai_summary %}hidden{% endif %}">
+        {% if article.ai_summary %}{{ article.ai_summary }}{% endif %}
+      </div>
     </div>
 
     <!-- Content -->
@@ -70,4 +91,63 @@
   </div>
   {% endif %}
 </article>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  const progressBar = document.getElementById('reading-progress');
+  if (progressBar) {
+    let ticking = false;
+    function updateProgress() {
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (docHeight > 0) {
+        progressBar.style.width = Math.min(100, (window.scrollY / docHeight) * 100) + '%';
+      }
+      ticking = false;
+    }
+    window.addEventListener('scroll', function () {
+      if (!ticking) {
+        ticking = true;
+        window.requestAnimationFrame(updateProgress);
+      }
+    }, { passive: true });
+  }
+
+  const articleId = {{ article.id }};
+  const btn = document.getElementById('ai-summary-btn');
+  const btnText = document.getElementById('ai-summary-btn-text');
+  const icon = document.getElementById('ai-summary-icon');
+  const body = document.getElementById('ai-summary-body');
+
+  if (!btn) return;
+
+  btn.addEventListener('click', async function () {
+    btn.disabled = true;
+    const prevText = btnText.textContent;
+    btnText.textContent = '生成中…';
+    icon.textContent = 'progress_activity';
+    icon.classList.add('animate-spin');
+
+    try {
+      const resp = await fetch(`/api/news/${articleId}/summary`, { method: 'POST' });
+      const json = await resp.json();
+      if (!resp.ok || !json.success) {
+        alert(json.message || '生成失败，请稍后再试');
+        return;
+      }
+      body.textContent = json.data.summary;
+      body.classList.remove('hidden');
+      btnText.textContent = '重新生成';
+    } catch (e) {
+      alert('网络错误，生成失败');
+    } finally {
+      btn.disabled = false;
+      btnText.textContent = body.classList.contains('hidden') ? prevText : '重新生成';
+      icon.textContent = 'auto_awesome';
+      icon.classList.remove('animate-spin');
+    }
+  });
+})();
+</script>
 {% endblock %}

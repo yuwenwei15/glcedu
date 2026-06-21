@@ -4,48 +4,28 @@
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>{% block title %}桂林学院新闻中心{% endblock %} | 见证卓越</title>
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <!-- preconnect 必须在用到这些域名的字体请求之前，才能提前完成 DNS/TLS 握手 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com" rel="preconnect"/>
-  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600&family=Noto+Serif+SC:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+  <!-- 本地构建的 Tailwind（替代 Play CDN，避免在浏览器里现编译）。配置见根目录 tailwind.config.js -->
+  <link rel="stylesheet" href="{{ static_url('css/tailwind.css') }}">
+  <link rel="stylesheet" href="{{ static_url('css/custom.css') }}">
   <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            "primary": "#0e5e6e",
-            "primary-dark": "#0a4a57",
-            "primary-light": "#e8f4f6",
-            "on-primary": "#ffffff",
-            "surface": "#f5f7fa",
-            "on-surface": "#2d3748",
-            "on-surface-variant": "#4a5568",
-            "outline-variant": "#d1d9e0",
-            "secondary": "#2c7a50",
-            "secondary-light": "#edf7f1",
-            "accent": "#c8a45c",
-            "background": "#f5f7fa",
-          },
-          fontFamily: {
-            "serif-cn": ["'Noto Serif SC'", "'STZhongsong'", "serif"],
-            "sans-cn": ["'Noto Sans SC'", "'PingFang SC'", "sans-serif"],
-            "mono": ["'JetBrains Mono'", "monospace"],
-          },
-          maxWidth: {
-            "container": "1440px",
-          }
-        }
+    (function(){
+      var d=document.documentElement;
+      if(localStorage.theme==='dark'||(!(localStorage.theme)&&window.matchMedia('(prefers-color-scheme:dark)').matches)){
+        d.classList.add('dark');
       }
-    }
+    })();
   </script>
 </head>
 <body class="bg-background text-on-surface antialiased overflow-x-hidden selection:bg-primary selection:text-white">
 
 <!-- Navigation -->
 <nav class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-xl border-b border-primary/10 transition-all duration-300" id="global-nav">
-  <div class="flex justify-between items-center w-full px-5 md:px-16 py-3 max-w-container mx-auto">
+  <div class="flex justify-between items-center w-full px-5 md:px-16 py-3 max-w-container mx-auto" id="nav-inner">
     <a class="flex items-center gap-3 hover:opacity-80 transition-opacity" href="{{ url_for('views.index') }}">
       <img src="{{ url_for('static', filename='img/logo_glc.png') }}" alt="桂林学院" class="h-10 w-auto"/>
     </a>
@@ -62,9 +42,14 @@
     <div class="flex items-center space-x-4">
       <form action="{{ url_for('views.search') }}" method="get" class="hidden md:flex items-center">
         <input type="text" name="q" placeholder="搜索新闻..." value="{{ request.args.get('q', '') }}"
-               class="bg-primary-light/50 border border-primary/20 rounded-full text-sm px-4 py-1.5 focus:outline-none focus:border-primary focus:bg-white w-36 focus:w-48 transition-all placeholder:text-on-surface-variant/60"/>
+               class="bg-primary-light/50 border border-primary/20 rounded-full text-sm px-4 py-1.5 focus:outline-none focus:border-primary focus:bg-white dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:bg-gray-700 w-36 focus:w-48 transition-all placeholder:text-on-surface-variant/60"/>
       </form>
-      <button class="md:hidden flex items-center text-primary" onclick="document.getElementById('mobile-nav').classList.toggle('hidden')">
+      <button id="dark-toggle" aria-label="切换暗色模式"
+              class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-primary-light dark:hover:bg-gray-700 transition-colors">
+        <span class="material-symbols-outlined text-xl text-on-surface-variant dark:text-white" id="dark-icon">dark_mode</span>
+      </button>
+      <button class="md:hidden flex items-center text-primary dark:text-white" aria-label="打开导航菜单"
+              onclick="document.getElementById('mobile-nav').classList.toggle('hidden')">
         <span class="material-symbols-outlined">menu</span>
       </button>
     </div>
@@ -97,7 +82,7 @@
         地址：中国广西桂林市雁山区雁中路3号<br>
         邮编：541006 | 电话：0773-3696366
       </p>
-      <p class="text-white/30 text-xs">&copy; 2024 桂林学院新闻中心. 保留所有权利.</p>
+      <p class="text-white/30 text-xs">&copy; {{ now().year }} 桂林学院新闻中心. 保留所有权利.</p>
     </div>
     <div class="flex flex-col space-y-3 items-start md:items-end">
       {% for cat in categories %}
@@ -112,17 +97,17 @@
   </div>
   <!-- Bottom bar -->
   <div class="border-t border-white/10 py-4 px-5 md:px-16 max-w-container mx-auto">
-    <p class="text-white/30 text-xs text-center">至善至博 · 明德笃行</p>
+    <p class="text-white/30 text-xs text-center">向学 · 向善 · 自律 · 自强</p>
   </div>
 </footer>
 
 <!-- Back to Top -->
-<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="回到顶部"
         class="fixed bottom-8 right-8 z-50 w-11 h-11 bg-primary text-white rounded-full shadow-lg shadow-primary/20 flex items-center justify-center opacity-0 translate-y-4 pointer-events-none transition-all duration-300 hover:bg-primary-dark hover:scale-110">
   <span class="material-symbols-outlined text-lg">arrow_upward</span>
 </button>
 
-<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ static_url('js/main.js') }}"></script>
 {% block scripts %}{% endblock %}
 </body>
 </html>

@@ -65,9 +65,13 @@ def generate_summary(article):
         max_tokens=current_app.config['AI_MAX_TOKENS'],
         messages=[{'role': 'user', 'content': prompt}],
     )
-    summary = (resp.choices[0].message.content or '').strip()
+    msg = resp.choices[0].message
+    summary = (msg.content or '').strip()
     if not summary:
-        raise RuntimeError('AI 返回了空内容')
+        reasoning = getattr(msg, 'reasoning', None) or ''
+        summary = reasoning.strip().split('\n')[-1].strip()
+    if not summary:
+        raise RuntimeError('AI 返回了空内容（可能 max_tokens 不足，模型思考被截断）')
 
     article.ai_summary = summary
     article.ai_summary_at = datetime.now()

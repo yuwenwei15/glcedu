@@ -47,10 +47,10 @@ class Config:
     # Admin
     ADMIN_TOKEN = os.getenv('ADMIN_TOKEN', 'glcedu-admin-2024')
 
-    # AI 新闻总结（OpenAI 兼容接口）
+    # AI 新闻总结（OpenAI 兼容接口 / 商汤 SenseNova）
     AI_API_KEY = os.getenv('AI_API_KEY', '')
-    AI_BASE_URL = os.getenv('AI_BASE_URL', 'https://api-r2tedbp7yaa7e9o4.aistudio-app.com/v1')
-    AI_MODEL = os.getenv('AI_MODEL', 'unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF')
+    AI_BASE_URL = os.getenv('AI_BASE_URL', 'https://token.sensenova.cn/v1')
+    AI_MODEL = os.getenv('AI_MODEL', 'sensenova-6.7-flash-lite')
     AI_TEMPERATURE = float(os.getenv('AI_TEMPERATURE', '0.6'))
     AI_MAX_TOKENS = int(os.getenv('AI_MAX_TOKENS', '600'))
     AI_TIMEOUT = int(os.getenv('AI_TIMEOUT', '60'))
